@@ -88,326 +88,328 @@ class _LogEntryFormState extends State<LogEntryForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      autovalidate: _autoValidate,
-      key: _formKey,
-      child: ListView(children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: Text(
-            'New Entry',
-            style: Theme.of(context).textTheme.headline,
+    return SingleChildScrollView(
+      child: Form(
+        autovalidate: _autoValidate,
+        key: _formKey,
+        child: Column(children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Text(
+              'New Entry',
+              style: Theme.of(context).textTheme.headline,
+            ),
           ),
-        ),
-        Text(
-          'Time and Date',
-          style: Theme.of(context).textTheme.subhead,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
-          child: Row(
+          Text(
+            'Time and Date',
+            style: Theme.of(context).textTheme.subhead,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
+            child: Row(
+              children: <Widget>[
+                FlatButton.icon(
+                  icon: Icon(Icons.calendar_today),
+                  label: Text('date'),
+                  onPressed: _selectDate,
+                ),
+                Expanded(
+                  child: TextFormField(
+                    controller: _dateController,
+                    readOnly: true,
+                    decoration: InputDecoration(border: OutlineInputBorder()),
+                    validator: FormValidators.date,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
+            child: Row(
+              children: <Widget>[
+                FlatButton.icon(
+                  icon: Icon(Icons.timer),
+                  label: Text('start'),
+                  onPressed: () {
+                    _selectTime(PointInDive.start);
+                  },
+                ),
+                Expanded(
+                  child: TextFormField(
+                    controller: _startController,
+                    readOnly: true,
+                    decoration: InputDecoration(border: OutlineInputBorder()),
+                    validator: FormValidators.start,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
+            child: Row(
+              children: <Widget>[
+                FlatButton.icon(
+                  icon: Icon(Icons.timer),
+                  label: Text('end'),
+                  onPressed: () {
+                    _selectTime(PointInDive.stop);
+                  },
+                ),
+                Expanded(
+                  child: TextFormField(
+                    controller: _endController,
+                    readOnly: true,
+                    decoration: InputDecoration(border: OutlineInputBorder()),
+                    validator: FormValidators.end,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12.0),
+            child: TextFormField(
+              decoration: _decoration('Duration'),
+              validator: FormValidators.duration,
+            ),
+          ),
+          Text(
+            'Dive Spot',
+            style: Theme.of(context).textTheme.subhead,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12.0),
+            child: TextFormField(
+              decoration: _decoration('Name'),
+              validator: FormValidators.name,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12.0),
+            child: TextFormField(
+              decoration: _decoration('Location'),
+              validator: FormValidators.location,
+            ),
+          ),
+          Text(
+            'Conditions',
+            style: Theme.of(context).textTheme.subhead,
+          ),
+          Row(
             children: <Widget>[
-              FlatButton.icon(
-                icon: Icon(Icons.calendar_today),
-                label: Text('date'),
-                onPressed: _selectDate,
-              ),
               Expanded(
                 child: TextFormField(
-                  controller: _dateController,
-                  readOnly: true,
-                  decoration: InputDecoration(border: OutlineInputBorder()),
-                  validator: FormValidators.date,
+                  decoration: _decoration('Visibility'),
+                  validator: FormValidators.visibility,
                 ),
               ),
+              Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 35,
+                    width: 115,
+                    child: RadioListTile(
+                      value: LengthUnits.feet,
+                      groupValue: _visibilityUnits,
+                      title: Text('ft'),
+                      onChanged: (LengthUnits value) {
+                        setState(() {
+                          _visibilityUnits = value;
+                        });
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: 115,
+                    child: RadioListTile(
+                      title: Text('m'),
+                      value: LengthUnits.meters,
+                      groupValue: _visibilityUnits,
+                      onChanged: (LengthUnits value) {
+                        setState(() {
+                          _visibilityUnits = value;
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              )
             ],
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
-          child: Row(
+          Row(
             children: <Widget>[
-              FlatButton.icon(
-                icon: Icon(Icons.timer),
-                label: Text('start'),
-                onPressed: () {
-                  _selectTime(PointInDive.start);
-                },
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 4),
+                  child: TextFormField(
+                    decoration: _decoration('Air'),
+                    validator: FormValidators.airTemperature,
+                  ),
+                ),
               ),
               Expanded(
-                child: TextFormField(
-                  controller: _startController,
-                  readOnly: true,
-                  decoration: InputDecoration(border: OutlineInputBorder()),
-                  validator: FormValidators.start,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                  child: TextFormField(
+                    decoration: _decoration('Surface'),
+                    validator: FormValidators.surfaceTemperature,
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
-          child: Row(
-            children: <Widget>[
-              FlatButton.icon(
-                icon: Icon(Icons.timer),
-                label: Text('end'),
-                onPressed: () {
-                  _selectTime(PointInDive.stop);
-                },
               ),
               Expanded(
-                child: TextFormField(
-                  controller: _endController,
-                  readOnly: true,
-                  decoration: InputDecoration(border: OutlineInputBorder()),
-                  validator: FormValidators.end,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 4.0),
+                  child: TextFormField(
+                    decoration: _decoration('Bottom'),
+                    validator: FormValidators.bottomTemperature,
+                  ),
                 ),
               ),
+              Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 35,
+                    width: 115,
+                    child: RadioListTile(
+                      value: TempUnits.farenheight,
+                      groupValue: _airTempUnits,
+                      title: Text('F'),
+                      onChanged: (TempUnits value) {
+                        setState(() {
+                          _airTempUnits = value;
+                        });
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: 115,
+                    child: RadioListTile(
+                      title: Text('C'),
+                      value: TempUnits.celsius,
+                      groupValue: _airTempUnits,
+                      onChanged: (TempUnits value) {
+                        setState(() {
+                          _airTempUnits = value;
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              )
             ],
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12.0),
-          child: TextFormField(
-            decoration: _decoration('Duration'),
-            validator: FormValidators.duration,
+          Text(
+            'Equipment',
+            style: Theme.of(context).textTheme.subhead,
           ),
-        ),
-        Text(
-          'Dive Spot',
-          style: Theme.of(context).textTheme.subhead,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 12.0),
-          child: TextFormField(
-            decoration: _decoration('Name'),
-            validator: FormValidators.name,
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: TextFormField(
+                  decoration: _decoration('Weight'),
+                  validator: FormValidators.weight,
+                ),
+              ),
+              Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 35,
+                    width: 115,
+                    child: RadioListTile(
+                      value: WeightUnits.lbs,
+                      groupValue: _weightUnits,
+                      title: Text('lbs'),
+                      onChanged: (WeightUnits value) {
+                        setState(() {
+                          _weightUnits = value;
+                        });
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: 115,
+                    child: RadioListTile(
+                      title: Text('kg'),
+                      value: WeightUnits.kg,
+                      groupValue: _weightUnits,
+                      onChanged: (WeightUnits value) {
+                        setState(() {
+                          _weightUnits = value;
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              )
+            ],
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 12.0),
-          child: TextFormField(
-            decoration: _decoration('Location'),
-            validator: FormValidators.location,
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 3.0),
+                  child: TextFormField(
+                    decoration: _decoration('Starting Air'),
+                    validator: FormValidators.startingAir,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 3.0),
+                  child: TextFormField(
+                    decoration: _decoration('Ending Air'),
+                    validator: FormValidators.endingAir,
+                  ),
+                ),
+              ),
+              Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 35,
+                    width: 115,
+                    child: RadioListTile(
+                      value: PressureUnits.psi,
+                      groupValue: _pressureUnits,
+                      title: Text('psi'),
+                      onChanged: (PressureUnits value) {
+                        setState(() {
+                          _pressureUnits = value;
+                        });
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: 115,
+                    child: RadioListTile(
+                      title: Text('bar'),
+                      value: PressureUnits.bar,
+                      groupValue: _pressureUnits,
+                      onChanged: (PressureUnits value) {
+                        setState(() {
+                          _pressureUnits = value;
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              )
+            ],
           ),
-        ),
-        Text(
-          'Conditions',
-          style: Theme.of(context).textTheme.subhead,
-        ),
-        Row(
-          children: <Widget>[
-            Expanded(
-              child: TextFormField(
-                decoration: _decoration('Visibility'),
-                validator: FormValidators.visibility,
-              ),
-            ),
-            Column(
-              children: <Widget>[
-                SizedBox(
-                  height: 35,
-                  width: 115,
-                  child: RadioListTile(
-                    value: LengthUnits.feet,
-                    groupValue: _visibilityUnits,
-                    title: Text('ft'),
-                    onChanged: (LengthUnits value) {
-                      setState(() {
-                        _visibilityUnits = value;
-                      });
-                    },
-                  ),
-                ),
-                SizedBox(
-                  width: 115,
-                  child: RadioListTile(
-                    title: Text('m'),
-                    value: LengthUnits.meters,
-                    groupValue: _visibilityUnits,
-                    onChanged: (LengthUnits value) {
-                      setState(() {
-                        _visibilityUnits = value;
-                      });
-                    },
-                  ),
-                ),
-              ],
-            )
-          ],
-        ),
-        Row(
-          children: <Widget>[
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(right: 4),
-                child: TextFormField(
-                  decoration: _decoration('Air'),
-                  validator: FormValidators.airTemperature,
-                ),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                child: TextFormField(
-                  decoration: _decoration('Surface'),
-                  validator: FormValidators.surfaceTemperature,
-                ),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 4.0),
-                child: TextFormField(
-                  decoration: _decoration('Bottom'),
-                  validator: FormValidators.bottomTemperature,
-                ),
-              ),
-            ),
-            Column(
-              children: <Widget>[
-                SizedBox(
-                  height: 35,
-                  width: 115,
-                  child: RadioListTile(
-                    value: TempUnits.farenheight,
-                    groupValue: _airTempUnits,
-                    title: Text('F'),
-                    onChanged: (TempUnits value) {
-                      setState(() {
-                        _airTempUnits = value;
-                      });
-                    },
-                  ),
-                ),
-                SizedBox(
-                  width: 115,
-                  child: RadioListTile(
-                    title: Text('C'),
-                    value: TempUnits.celsius,
-                    groupValue: _airTempUnits,
-                    onChanged: (TempUnits value) {
-                      setState(() {
-                        _airTempUnits = value;
-                      });
-                    },
-                  ),
-                ),
-              ],
-            )
-          ],
-        ),
-        Text(
-          'Equipment',
-          style: Theme.of(context).textTheme.subhead,
-        ),
-        Row(
-          children: <Widget>[
-            Expanded(
-              child: TextFormField(
-                decoration: _decoration('Weight'),
-                validator: FormValidators.weight,
-              ),
-            ),
-            Column(
-              children: <Widget>[
-                SizedBox(
-                  height: 35,
-                  width: 115,
-                  child: RadioListTile(
-                    value: WeightUnits.lbs,
-                    groupValue: _weightUnits,
-                    title: Text('lbs'),
-                    onChanged: (WeightUnits value) {
-                      setState(() {
-                        _weightUnits = value;
-                      });
-                    },
-                  ),
-                ),
-                SizedBox(
-                  width: 115,
-                  child: RadioListTile(
-                    title: Text('kg'),
-                    value: WeightUnits.kg,
-                    groupValue: _weightUnits,
-                    onChanged: (WeightUnits value) {
-                      setState(() {
-                        _weightUnits = value;
-                      });
-                    },
-                  ),
-                ),
-              ],
-            )
-          ],
-        ),
-        Row(
-          children: <Widget>[
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(right: 3.0),
-                child: TextFormField(
-                  decoration: _decoration('Starting Air'),
-                  validator: FormValidators.startingAir,
-                ),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 3.0),
-                child: TextFormField(
-                  decoration: _decoration('Ending Air'),
-                  validator: FormValidators.endingAir,
-                ),
-              ),
-            ),
-            Column(
-              children: <Widget>[
-                SizedBox(
-                  height: 35,
-                  width: 115,
-                  child: RadioListTile(
-                    value: PressureUnits.psi,
-                    groupValue: _pressureUnits,
-                    title: Text('psi'),
-                    onChanged: (PressureUnits value) {
-                      setState(() {
-                        _pressureUnits = value;
-                      });
-                    },
-                  ),
-                ),
-                SizedBox(
-                  width: 115,
-                  child: RadioListTile(
-                    title: Text('bar'),
-                    value: PressureUnits.bar,
-                    groupValue: _pressureUnits,
-                    onChanged: (PressureUnits value) {
-                      setState(() {
-                        _pressureUnits = value;
-                      });
-                    },
-                  ),
-                ),
-              ],
-            )
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
-          child: TextFormField(
-              decoration: _decoration('Comments'),
-              validator: FormValidators.comments),
-        ),
-        RaisedButton(
-          onPressed: _validateInputs,
-          child: Text('Submit'),
-        )
-      ]),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
+            child: TextFormField(
+                decoration: _decoration('Comments'),
+                validator: FormValidators.comments),
+          ),
+          RaisedButton(
+            onPressed: _validateInputs,
+            child: Text('Submit'),
+          )
+        ]),
+      ),
     );
   }
 }
