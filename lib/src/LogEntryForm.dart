@@ -1,9 +1,12 @@
 import 'dart:developer';
+import 'package:flutter_datetime_formfield/flutter_datetime_formfield.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+
 import '../shared/FormValidators.dart';
+import '../shared/constants/Units.dart';
 
 class LogEntryForm extends StatefulWidget {
   const LogEntryForm({Key key}) : super(key: key);
@@ -12,27 +15,21 @@ class LogEntryForm extends StatefulWidget {
   _LogEntryFormState createState() => _LogEntryFormState();
 }
 
-enum LengthUnits { feet, meters }
-enum WeightUnits { lbs, kg }
-enum TempUnits { farenheight, celsius }
-enum PointInDive { start, stop }
-enum PressureUnits { psi, bar }
-
 class _LogEntryFormState extends State<LogEntryForm> {
   final _formKey = GlobalKey<FormState>();
 
   DateTime _date;
   TimeOfDay _startTime;
   TimeOfDay _endTime;
-  TempUnits _airTempUnits = TempUnits.farenheight;
-  TempUnits _surfaceTempUnits = TempUnits.farenheight;
-  TempUnits _bottomTempUnits = TempUnits.farenheight;
-  PressureUnits _pressureUnits = PressureUnits.psi;
+  String _airTempUnits = TempUnits.f;
+  String _surfaceTempUnits = TempUnits.f;
+  String _bottomTempUnits = TempUnits.f;
+  String _pressureUnits = PressureUnits.psi;
   TextEditingController _dateController = TextEditingController();
   TextEditingController _startController = TextEditingController();
   TextEditingController _endController = TextEditingController();
-  LengthUnits _visibilityUnits = LengthUnits.feet;
-  WeightUnits _weightUnits = WeightUnits.lbs;
+  String _visibilityUnits = LengthUnits.ft;
+  String _weightUnits = WeightUnits.lbs;
   bool _autoValidate = false;
 
   _selectDate() async {
@@ -50,7 +47,7 @@ class _LogEntryFormState extends State<LogEntryForm> {
     });
   }
 
-  _selectTime(PointInDive point) async {
+  _selectTime(String point) async {
     final time = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
@@ -115,6 +112,7 @@ class _LogEntryFormState extends State<LogEntryForm> {
                 ),
                 Expanded(
                   child: TextFormField(
+                    onTap: _selectDate,
                     controller: _dateController,
                     readOnly: true,
                     decoration: InputDecoration(border: OutlineInputBorder()),
@@ -137,6 +135,9 @@ class _LogEntryFormState extends State<LogEntryForm> {
                 ),
                 Expanded(
                   child: TextFormField(
+                    onTap: () {
+                      _selectTime(PointInDive.start);
+                    },
                     controller: _startController,
                     readOnly: true,
                     decoration: InputDecoration(border: OutlineInputBorder()),
@@ -159,6 +160,9 @@ class _LogEntryFormState extends State<LogEntryForm> {
                 ),
                 Expanded(
                   child: TextFormField(
+                    onTap: () {
+                      _selectTime(PointInDive.stop);
+                    },
                     controller: _endController,
                     readOnly: true,
                     decoration: InputDecoration(border: OutlineInputBorder()),
@@ -166,13 +170,6 @@ class _LogEntryFormState extends State<LogEntryForm> {
                   ),
                 ),
               ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12.0),
-            child: TextFormField(
-              decoration: _decoration('Duration'),
-              validator: FormValidators.duration,
             ),
           ),
           Text(
@@ -211,10 +208,10 @@ class _LogEntryFormState extends State<LogEntryForm> {
                     height: 35,
                     width: 115,
                     child: RadioListTile(
-                      value: LengthUnits.feet,
+                      value: LengthUnits.ft,
                       groupValue: _visibilityUnits,
                       title: Text('ft'),
-                      onChanged: (LengthUnits value) {
+                      onChanged: (String value) {
                         setState(() {
                           _visibilityUnits = value;
                         });
@@ -225,9 +222,9 @@ class _LogEntryFormState extends State<LogEntryForm> {
                     width: 115,
                     child: RadioListTile(
                       title: Text('m'),
-                      value: LengthUnits.meters,
+                      value: LengthUnits.m,
                       groupValue: _visibilityUnits,
-                      onChanged: (LengthUnits value) {
+                      onChanged: (String value) {
                         setState(() {
                           _visibilityUnits = value;
                         });
@@ -273,10 +270,10 @@ class _LogEntryFormState extends State<LogEntryForm> {
                     height: 35,
                     width: 115,
                     child: RadioListTile(
-                      value: TempUnits.farenheight,
+                      value: TempUnits.f,
                       groupValue: _airTempUnits,
                       title: Text('F'),
-                      onChanged: (TempUnits value) {
+                      onChanged: (String value) {
                         setState(() {
                           _airTempUnits = value;
                         });
@@ -287,9 +284,9 @@ class _LogEntryFormState extends State<LogEntryForm> {
                     width: 115,
                     child: RadioListTile(
                       title: Text('C'),
-                      value: TempUnits.celsius,
+                      value: TempUnits.c,
                       groupValue: _airTempUnits,
-                      onChanged: (TempUnits value) {
+                      onChanged: (String value) {
                         setState(() {
                           _airTempUnits = value;
                         });
@@ -321,7 +318,7 @@ class _LogEntryFormState extends State<LogEntryForm> {
                       value: WeightUnits.lbs,
                       groupValue: _weightUnits,
                       title: Text('lbs'),
-                      onChanged: (WeightUnits value) {
+                      onChanged: (String value) {
                         setState(() {
                           _weightUnits = value;
                         });
@@ -334,7 +331,7 @@ class _LogEntryFormState extends State<LogEntryForm> {
                       title: Text('kg'),
                       value: WeightUnits.kg,
                       groupValue: _weightUnits,
-                      onChanged: (WeightUnits value) {
+                      onChanged: (String value) {
                         setState(() {
                           _weightUnits = value;
                         });
@@ -374,7 +371,7 @@ class _LogEntryFormState extends State<LogEntryForm> {
                       value: PressureUnits.psi,
                       groupValue: _pressureUnits,
                       title: Text('psi'),
-                      onChanged: (PressureUnits value) {
+                      onChanged: (String value) {
                         setState(() {
                           _pressureUnits = value;
                         });
@@ -387,7 +384,7 @@ class _LogEntryFormState extends State<LogEntryForm> {
                       title: Text('bar'),
                       value: PressureUnits.bar,
                       groupValue: _pressureUnits,
-                      onChanged: (PressureUnits value) {
+                      onChanged: (String value) {
                         setState(() {
                           _pressureUnits = value;
                         });
