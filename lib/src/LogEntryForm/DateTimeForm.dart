@@ -6,11 +6,19 @@ import 'package:scuba/shared/constants/Units.dart';
 
 class DateTimeForm extends StatefulWidget {
   const DateTimeForm(
-      {Key key, @required this.autoValidate, @required this.formKey})
+      {Key key,
+      @required this.autoValidate,
+      @required this.formKey,
+      @required this.dateResult,
+      @required this.startResult,
+      @required this.endResult})
       : super(key: key);
 
   final GlobalKey<FormState> formKey;
   final bool autoValidate;
+  final ValueChanged<String> dateResult;
+  final ValueChanged<String> startResult;
+  final ValueChanged<String> endResult;
 
   @override
   _DateTimeFormState createState() => _DateTimeFormState();
@@ -66,24 +74,7 @@ class _DateTimeFormState extends State<DateTimeForm> {
       child: Column(children: <Widget>[
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 4.0),
-          child: Row(
-            children: <Widget>[
-              FlatButton.icon(
-                icon: Icon(Icons.calendar_today),
-                label: Text('date'),
-                onPressed: _selectDate,
-              ),
-              Expanded(
-                child: TextFormField(
-                  onTap: _selectDate,
-                  controller: _dateController,
-                  readOnly: true,
-                  decoration: InputDecoration(border: OutlineInputBorder()),
-                  validator: FormValidators.date,
-                ),
-              ),
-            ],
-          ),
+          child: _dateField(),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -136,6 +127,31 @@ class _DateTimeFormState extends State<DateTimeForm> {
           ),
         ),
       ]),
+    );
+  }
+
+  _dateField() {
+    return FormField(
+      builder: (FormFieldState<String> state) {
+        return Row(
+          children: <Widget>[
+            FlatButton.icon(
+              icon: Icon(Icons.calendar_today),
+              label: Text('date'),
+              onPressed: _selectDate,
+            ),
+            Expanded(
+              child: TextFormField(
+                onTap: _selectDate,
+                controller: _dateController,
+                readOnly: true,
+                decoration: InputDecoration(border: OutlineInputBorder()),
+                validator: FormValidators.date,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

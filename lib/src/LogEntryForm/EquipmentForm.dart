@@ -36,10 +36,7 @@ class EquipmentForm extends StatelessWidget {
         Row(
           children: <Widget>[
             Expanded(
-              child: TextFormField(
-                decoration: _decoration('Weight'),
-                validator: FormValidators.weight,
-              ),
+              child: _weightField(),
             ),
             _weightUnitsField(),
           ],
@@ -49,25 +46,40 @@ class EquipmentForm extends StatelessWidget {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(right: 3.0),
-                child: TextFormField(
-                  decoration: _decoration('Starting Air'),
-                  validator: FormValidators.startingAir,
-                ),
+                child: _startingAirField(),
               ),
             ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(left: 3.0),
-                child: TextFormField(
-                  decoration: _decoration('Ending Air'),
-                  validator: FormValidators.endingAir,
-                ),
+                child: _endingAirField(),
               ),
             ),
           ],
         ),
         _pressureUnitsField(),
       ]),
+    );
+  }
+
+  Widget _endingAirField() {
+    return TextFormField(
+      decoration: _decoration('Ending Air'),
+      validator: FormValidators.endingAir,
+    );
+  }
+
+  Widget _startingAirField() {
+    return TextFormField(
+      decoration: _decoration('Starting Air'),
+      validator: FormValidators.startingAir,
+    );
+  }
+
+  Widget _weightField() {
+    return TextFormField(
+      decoration: _decoration('Weight'),
+      validator: FormValidators.weight,
     );
   }
 
