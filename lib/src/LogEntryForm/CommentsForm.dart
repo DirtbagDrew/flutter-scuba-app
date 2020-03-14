@@ -23,17 +23,22 @@ class CommentsForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      autovalidate: autoValidate,
-      key: formKey,
-      child: Column(children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
-          child: TextFormField(
-              decoration: _decoration('Comments'),
-              validator: FormValidators.comments),
-        ),
-      ]),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Form(
+        autovalidate: autoValidate,
+        key: formKey,
+        child: Column(children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
+            child: TextFormField(
+                minLines: 5,
+                maxLines: 5,
+                decoration: _decoration('Comments'),
+                validator: FormValidators.comments),
+          ),
+        ]),
+      ),
     );
   }
 }

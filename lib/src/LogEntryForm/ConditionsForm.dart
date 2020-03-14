@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:scuba/shared/FormValidators.dart';
+import 'package:scuba/shared/constants/FormTypes.dart';
 import 'package:scuba/shared/constants/Units.dart';
 
 class ConditionsForm extends StatelessWidget {
@@ -18,14 +20,14 @@ class ConditionsForm extends StatelessWidget {
 
   final bool autoValidate;
   final GlobalKey<FormState> formKey;
-  final ValueChanged<String> airTempResult;
-  final ValueChanged<String> bottomTempResult;
-  final ValueChanged<String> surfaceTempResult;
+  final ValueChanged<int> airTempResult;
+  final ValueChanged<int> bottomTempResult;
+  final ValueChanged<int> surfaceTempResult;
+  final ValueChanged<int> visibilityResult;
   final ValueChanged<String> tempUnitsResult;
-  final ValueChanged<String> visibilityResult;
   final ValueChanged<String> visibilityUnitsResult;
 
-  _decoration(String s) {
+  InputDecoration _decoration(String s) {
     return InputDecoration(
       border: OutlineInputBorder(),
       labelText: s,
@@ -34,61 +36,69 @@ class ConditionsForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      autovalidate: autoValidate,
-      key: formKey,
-      child: Column(children: <Widget>[
-        Row(
-          children: <Widget>[
-            Expanded(
-              child: visibilityField(),
-            ),
-            _visibilityUnitsField(),
-          ],
-        ),
-        Row(
-          children: <Widget>[
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(right: 4),
-                child: _airTempField(),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Form(
+        autovalidate: autoValidate,
+        key: formKey,
+        child: Column(children: <Widget>[
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: visibilityField(),
               ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                child: _surfaceTempField(),
+              _visibilityUnitsField(),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Text('Temperatures'),
+              _tempUnitsField(),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 4),
+                  child: _airTempField(),
+                ),
               ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 4.0),
-                child: _bottomTempField(),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                  child: _surfaceTempField(),
+                ),
               ),
-            ),
-          ],
-        ),
-        _tempUnitsField(),
-      ]),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 4.0),
+                  child: _bottomTempField(),
+                ),
+              ),
+            ],
+          ),
+        ]),
+      ),
     );
   }
 
   Widget _bottomTempField() {
-    return TextFormField(
+    return NumberTextFormField(
       decoration: _decoration('Bottom'),
       validator: FormValidators.bottomTemperature,
       onSaved: (String result) {
-        bottomTempResult(result);
+        bottomTempResult(int.parse(result));
       },
     );
   }
 
   Widget _surfaceTempField() {
-    return TextFormField(
+    return NumberTextFormField(
       decoration: _decoration('Surface'),
       validator: FormValidators.surfaceTemperature,
       onSaved: (String result) {
-        surfaceTempResult(result);
+        surfaceTempResult(int.parse(result));
       },
     );
   }
@@ -102,7 +112,7 @@ class ConditionsForm extends StatelessWidget {
           children: <Widget>[
             SizedBox(
               height: 55,
-              width: 115,
+              width: 90,
               child: RadioListTile(
                 value: TempUnits.f,
                 groupValue: state.value,
@@ -114,7 +124,7 @@ class ConditionsForm extends StatelessWidget {
             ),
             SizedBox(
               height: 55,
-              width: 115,
+              width: 90,
               child: RadioListTile(
                 title: Text('C'),
                 value: TempUnits.c,
@@ -134,21 +144,21 @@ class ConditionsForm extends StatelessWidget {
   }
 
   Widget _airTempField() {
-    return TextFormField(
+    return NumberTextFormField(
       decoration: _decoration('Air'),
       validator: FormValidators.airTemperature,
       onSaved: (String result) {
-        airTempResult(result);
+        airTempResult(int.parse(result));
       },
     );
   }
 
   Widget visibilityField() {
-    return TextFormField(
+    return NumberTextFormField(
       decoration: _decoration('Visibility'),
       validator: FormValidators.visibility,
       onSaved: (String result) {
-        visibilityResult(result);
+        visibilityResult(int.parse(result));
       },
     );
   }

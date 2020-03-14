@@ -2,16 +2,27 @@ import 'package:flutter/material.dart';
 
 class LogEntryData {
   DateTime date;
-  TimeOfDay startTime;
-  TimeOfDay endTime;
-  String locationName;
-  String location;
   Reading airTemp;
-  Reading surfaceTemp;
   Reading bottomTemp;
-  Reading pressure;
+  Reading endingAir;
+  Reading startingAir;
+  Reading surfaceTemp;
   Reading visibility;
   Reading weight;
+  String location;
+  String locationName;
+  TimeOfDay endTime;
+  TimeOfDay startTime;
+
+  LogEntryData() {
+    airTemp = Reading();
+    bottomTemp = Reading();
+    endingAir = Reading();
+    startingAir = Reading();
+    surfaceTemp = Reading();
+    visibility = Reading();
+    weight = Reading();
+  }
 }
 
 class Reading {

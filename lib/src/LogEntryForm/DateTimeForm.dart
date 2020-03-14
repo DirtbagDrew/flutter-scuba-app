@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:scuba/shared/Conversions.dart';
 import 'package:scuba/shared/FormValidators.dart';
 
 class DateTimeForm extends StatelessWidget {
@@ -17,9 +19,9 @@ class DateTimeForm extends StatelessWidget {
   final bool autoValidate;
   final BuildContext context;
   final GlobalKey<FormState> formKey;
-  final ValueChanged<String> dateResult;
-  final ValueChanged<String> endResult;
-  final ValueChanged<String> startResult;
+  final ValueChanged<DateTime> dateResult;
+  final ValueChanged<TimeOfDay> endResult;
+  final ValueChanged<TimeOfDay> startResult;
 
   _selectDate() async {
     final date = await showDatePicker(
@@ -47,96 +49,19 @@ class DateTimeForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      autovalidate: autoValidate,
-      key: formKey,
-      child: Column(children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
-          child: _dateField(),
-        ),
-        Padding(
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Form(
+        autovalidate: autoValidate,
+        key: formKey,
+        child: Column(children: <Widget>[
+          Padding(
             padding: const EdgeInsets.symmetric(vertical: 4.0),
-            child: _startTimeField()),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
-          child: _endTimeField(),
-        ),
-      ]),
-    );
-  }
-
-  Widget _endTimeField() {
-    return FormField(
-      initialValue: TextEditingController(text: ''),
-      builder: (FormFieldState<TextEditingController> state) {
-        return Row(
-          children: <Widget>[
-            FlatButton.icon(
-              icon: Icon(Icons.timer),
-              label: Text('end'),
-              onPressed: () async {
-                TextEditingController endController = state.value;
-                endController.text = await _selectTime();
-                state.didChange(endController);
-              },
-            ),
-            Expanded(
-              child: TextFormField(
-                onTap: () async {
-                  TextEditingController endController = state.value;
-                  endController.text = await _selectTime();
-                  state.didChange(endController);
-                },
-                controller: state.value,
-                readOnly: true,
-                decoration: InputDecoration(border: OutlineInputBorder()),
-                validator: FormValidators.end,
-              ),
-            ),
-          ],
-        );
-      },
-      onSaved: (TextEditingController result) {
-        endResult(result.text);
-      },
-    );
-  }
-
-  Widget _startTimeField() {
-    return FormField(
-      initialValue: TextEditingController(text: ''),
-      builder: (FormFieldState<TextEditingController> state) {
-        return Row(
-          children: <Widget>[
-            FlatButton.icon(
-              icon: Icon(Icons.timer),
-              label: Text('start'),
-              onPressed: () async {
-                TextEditingController startController = state.value;
-                startController.text = await _selectTime();
-                state.didChange(startController);
-              },
-            ),
-            Expanded(
-              child: TextFormField(
-                onTap: () async {
-                  TextEditingController startController = state.value;
-                  startController.text = await _selectTime();
-                  state.didChange(startController);
-                },
-                controller: state.value,
-                readOnly: true,
-                decoration: InputDecoration(border: OutlineInputBorder()),
-                validator: FormValidators.start,
-              ),
-            ),
-          ],
-        );
-      },
-      onSaved: (TextEditingController result) {
-        startResult(result.text);
-      },
+            child: _dateField(),
+          ),
+          _timeField()
+        ]),
+      ),
     );
   }
 
@@ -156,7 +81,7 @@ class DateTimeForm extends StatelessWidget {
               },
             ),
             Expanded(
-              child: TextField(
+              child: TextFormField(
                 onTap: () async {
                   TextEditingController dateController = state.value;
                   dateController.text = await _selectDate();
@@ -165,13 +90,109 @@ class DateTimeForm extends StatelessWidget {
                 controller: state.value,
                 readOnly: true,
                 decoration: InputDecoration(border: OutlineInputBorder()),
+                validator: FormValidators.start,
               ),
             ),
           ],
         );
       },
       onSaved: (TextEditingController result) {
-        dateResult(result.text);
+        dateResult(Conversions.dateStringToDateTime(result.text));
+      },
+    );
+  }
+
+  Widget _timeField() {
+    return FormField(
+      initialValue: <TextEditingController>[
+        TextEditingController(text: ''),
+        TextEditingController(text: '')
+      ],
+      builder: (FormFieldState<List<TextEditingController>> state) {
+        return Column(
+          children: <Widget>[
+            Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: Row(
+                  children: <Widget>[
+                    FlatButton.icon(
+                      icon: Icon(Icons.timer),
+                      label: Text('start'),
+                      onPressed: () async {
+                        List<TextEditingController> newStateValue = state.value;
+                        newStateValue[0].text = await _selectTime();
+                        state.didChange(newStateValue);
+                      },
+                    ),
+                    Expanded(
+                      child: TextFormField(
+                        onTap: () async {
+                          List<TextEditingController> newStateValue =
+                              state.value;
+                          newStateValue[0].text = await _selectTime();
+                          state.didChange(newStateValue);
+                        },
+                        controller: state.value[0],
+                        readOnly: true,
+                        decoration:
+                            InputDecoration(border: OutlineInputBorder()),
+                        validator: FormValidators.start,
+                      ),
+                    ),
+                  ],
+                )),
+            Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: Row(
+                  children: <Widget>[
+                    FlatButton.icon(
+                      icon: Icon(Icons.timer),
+                      label: Text('end'),
+                      onPressed: () async {
+                        List<TextEditingController> newStateValue = state.value;
+                        newStateValue[1].text = await _selectTime();
+                        state.didChange(newStateValue);
+                      },
+                    ),
+                    Expanded(
+                      child: TextFormField(
+                        onTap: () async {
+                          List<TextEditingController> newStateValue =
+                              state.value;
+                          newStateValue[1].text = await _selectTime();
+                          state.didChange(newStateValue);
+                        },
+                        controller: state.value[1],
+                        readOnly: true,
+                        decoration:
+                            InputDecoration(border: OutlineInputBorder()),
+                        validator: FormValidators.end,
+                      ),
+                    ),
+                  ],
+                )),
+            Text(
+              state.errorText != null ? state.errorText : "",
+              style: TextStyle(color: Colors.red),
+            )
+          ],
+        );
+      },
+      validator: (List<TextEditingController> stateValue) {
+        TimeOfDay startTime =
+            Conversions.timeStringToTimeOfDay(stateValue[0].text);
+        TimeOfDay endTime =
+            Conversions.timeStringToTimeOfDay(stateValue[1].text);
+
+        if (Conversions.timeOfDayToInt(startTime) >
+            Conversions.timeOfDayToInt(endTime)) {
+          return "Invalid end time.";
+        }
+        return null;
+      },
+      onSaved: (List<TextEditingController> result) {
+        startResult(Conversions.timeStringToTimeOfDay(result[0].text));
+        endResult(Conversions.timeStringToTimeOfDay(result[1].text));
       },
     );
   }

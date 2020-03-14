@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:scuba/shared/FormValidators.dart';
+import 'package:scuba/shared/constants/FormTypes.dart';
 import 'package:scuba/shared/constants/Units.dart';
 
 class EquipmentForm extends StatelessWidget {
-  const EquipmentForm(
-      {Key key,
-      @required this.autoValidate,
-      @required this.formKey,
-      @required this.weightUnitsResult,
-      @required this.pressureUnitsResult})
-      : super(key: key);
-  final GlobalKey<FormState> formKey;
+  const EquipmentForm({
+    Key key,
+    @required this.autoValidate,
+    @required this.endingAirResult,
+    @required this.formKey,
+    @required this.pressureUnitsResult,
+    @required this.startingAirResult,
+    @required this.weightResult,
+    @required this.weightUnitsResult,
+  }) : super(key: key);
   final bool autoValidate;
-  final ValueChanged<String> weightUnitsResult;
+  final GlobalKey<FormState> formKey;
+  final ValueChanged<int> endingAirResult;
+  final ValueChanged<int> startingAirResult;
+  final ValueChanged<int> weightResult;
   final ValueChanged<String> pressureUnitsResult;
+  final ValueChanged<String> weightUnitsResult;
 
   _decoration(String s) {
     return InputDecoration(
@@ -25,66 +32,79 @@ class EquipmentForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      autovalidate: autoValidate,
-      key: formKey,
-      child: Column(children: <Widget>[
-        Text(
-          'Equipment',
-          style: Theme.of(context).textTheme.subhead,
-        ),
-        Row(
-          children: <Widget>[
-            Expanded(
-              child: _weightField(),
-            ),
-            _weightUnitsField(),
-          ],
-        ),
-        Row(
-          children: <Widget>[
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(right: 3.0),
-                child: _startingAirField(),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Form(
+        autovalidate: autoValidate,
+        key: formKey,
+        child: Column(children: <Widget>[
+          Text(
+            'Equipment',
+            style: Theme.of(context).textTheme.subhead,
+          ),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: _weightField(),
               ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 3.0),
-                child: _endingAirField(),
+              _weightUnitsField(),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 3.0),
+                  child: _startingAirField(),
+                ),
               ),
-            ),
-          ],
-        ),
-        _pressureUnitsField(),
-      ]),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 3.0),
+                  child: _endingAirField(),
+                ),
+              ),
+            ],
+          ),
+          _pressureUnitsField(),
+        ]),
+      ),
     );
   }
 
   Widget _endingAirField() {
-    return TextFormField(
+    return NumberTextFormField(
       decoration: _decoration('Ending Air'),
       validator: FormValidators.endingAir,
+      onSaved: (String result) {
+        endingAirResult(int.parse(result));
+      },
     );
   }
 
   Widget _startingAirField() {
-    return TextFormField(
+    return NumberTextFormField(
       decoration: _decoration('Starting Air'),
       validator: FormValidators.startingAir,
+      onSaved: (String result) {
+        startingAirResult(int.parse(result));
+      },
     );
   }
 
   Widget _weightField() {
-    return TextFormField(
+    return NumberTextFormField(
       decoration: _decoration('Weight'),
       validator: FormValidators.weight,
+      onSaved: (String result) {
+        weightResult(int.parse(result));
+      },
     );
   }
 
   Widget _pressureUnitsField() {
     return FormField<String>(
+      initialValue: PressureUnits.psi,
       builder: (FormFieldState<String> state) {
         return Row(
           children: <Widget>[
@@ -123,6 +143,7 @@ class EquipmentForm extends StatelessWidget {
 
   Widget _weightUnitsField() {
     return FormField<String>(
+      initialValue: WeightUnits.lbs,
       builder: (FormFieldState<String> state) {
         return Column(
           children: <Widget>[
