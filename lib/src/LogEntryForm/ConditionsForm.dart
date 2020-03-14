@@ -95,6 +95,7 @@ class ConditionsForm extends StatelessWidget {
 
   Widget _tempUnitsField() {
     return FormField(
+      initialValue: TempUnits.f,
       builder: (FormFieldState<String> state) {
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,

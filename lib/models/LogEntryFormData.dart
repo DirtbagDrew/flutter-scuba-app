@@ -4,6 +4,8 @@ class LogEntryData {
   DateTime date;
   TimeOfDay startTime;
   TimeOfDay endTime;
+  String locationName;
+  String location;
   Reading airTemp;
   Reading surfaceTemp;
   Reading bottomTemp;

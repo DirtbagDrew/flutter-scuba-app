@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:scuba/models/LogEntryFormData.dart';
 import 'package:scuba/src/LogEntryForm/CommentsForm.dart';
 import 'package:scuba/src/LogEntryForm/ConditionsForm.dart';
 import 'package:scuba/src/LogEntryForm/EquipmentForm.dart';
@@ -15,6 +16,7 @@ class LogEntryForm extends StatefulWidget {
 
 class _LogEntryFormState extends State<LogEntryForm> {
   int _currentStep = 0;
+  LogEntryData _logEntryData = LogEntryData();
   List<GlobalKey<FormState>> _formKeys = [
     GlobalKey<FormState>(),
     GlobalKey<FormState>(),
@@ -55,6 +57,25 @@ class _LogEntryFormState extends State<LogEntryForm> {
     );
   }
 
+  _dateStringToDateTime(String dateString) {
+    List<String> splitDateString = dateString.split('/');
+    int year = int.parse(splitDateString[2]);
+    int month = int.parse(splitDateString[1]);
+    int day = int.parse(splitDateString[0]);
+    return DateTime(year, month, day);
+  }
+
+  _timeStringToTimeOfDay(String timeString) {
+    RegExp numbersOnly = RegExp(r'[0-9]+');
+    var splitString = timeString
+        .split(':')
+        .map((String s) => numbersOnly.firstMatch(s).group(0))
+        .toList();
+
+    return TimeOfDay(
+        hour: int.parse(splitString[0]), minute: int.parse(splitString[1]));
+  }
+
   List<Step> _mySteps() {
     List<Step> _steps = [
       Step(
@@ -63,6 +84,22 @@ class _LogEntryFormState extends State<LogEntryForm> {
         ),
         isActive: _currentStep == 0,
         content: DateTimeForm(
+          context: context,
+          dateResult: (String result) {
+            setState(() {
+              _logEntryData.date = _dateStringToDateTime(result);
+            });
+          },
+          startResult: (String result) {
+            setState(() {
+              _logEntryData.startTime = _timeStringToTimeOfDay(result);
+            });
+          },
+          endResult: (String result) {
+            setState(() {
+              _logEntryData.endTime = _timeStringToTimeOfDay(result);
+            });
+          },
           formKey: _formKeys[0],
           autoValidate: _autoValidation[0],
         ),
@@ -75,6 +112,16 @@ class _LogEntryFormState extends State<LogEntryForm> {
         content: LocationForm(
           formKey: _formKeys[1],
           autoValidate: _autoValidation[1],
+          nameResult: (String result) {
+            setState(() {
+              _logEntryData.locationName = result;
+            });
+          },
+          locationResult: (String result) {
+            setState(() {
+              _logEntryData.location = result;
+            });
+          },
         ),
       ),
       Step(

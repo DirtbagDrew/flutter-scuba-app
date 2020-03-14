@@ -2,155 +2,176 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:scuba/shared/FormValidators.dart';
-import 'package:scuba/shared/constants/Units.dart';
 
-class DateTimeForm extends StatefulWidget {
-  const DateTimeForm(
-      {Key key,
-      @required this.autoValidate,
-      @required this.formKey,
-      @required this.dateResult,
-      @required this.startResult,
-      @required this.endResult})
-      : super(key: key);
+class DateTimeForm extends StatelessWidget {
+  const DateTimeForm({
+    Key key,
+    @required this.autoValidate,
+    @required this.context,
+    @required this.dateResult,
+    @required this.endResult,
+    @required this.formKey,
+    @required this.startResult,
+  }) : super(key: key);
 
-  final GlobalKey<FormState> formKey;
   final bool autoValidate;
+  final BuildContext context;
+  final GlobalKey<FormState> formKey;
   final ValueChanged<String> dateResult;
-  final ValueChanged<String> startResult;
   final ValueChanged<String> endResult;
-
-  @override
-  _DateTimeFormState createState() => _DateTimeFormState();
-}
-
-class _DateTimeFormState extends State<DateTimeForm> {
-  TextEditingController _dateController = TextEditingController();
-  TextEditingController _startController = TextEditingController();
-  TextEditingController _endController = TextEditingController();
+  final ValueChanged<String> startResult;
 
   _selectDate() async {
     final date = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(2018),
-      lastDate: DateTime(2030),
+      lastDate: DateTime.now(),
     );
-    setState(() {
-      if (date != null) {
-        _dateController.text = DateFormat("MM/dd/yyyy").format(date);
-      }
-    });
+    if (date != null) {
+      return DateFormat("MM/dd/yyyy").format(date);
+    }
+    return '';
   }
 
-  _selectTime(String point) async {
+  _selectTime() async {
     final time = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
     );
-    setState(() {
-      if (time != null) {
-        if (point == PointInDive.start) {
-          _startController.text = time.format(context).toString();
-        } else {
-          _endController.text = time.format(context).toString();
-        }
-      }
-    });
-  }
-
-  _decoration(String s) {
-    return InputDecoration(
-      border: OutlineInputBorder(),
-      labelText: s,
-    );
+    if (time != null) {
+      return time.format(context).toString();
+    }
+    return '';
   }
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      autovalidate: widget.autoValidate,
-      key: widget.formKey,
+      autovalidate: autoValidate,
+      key: formKey,
       child: Column(children: <Widget>[
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 4.0),
           child: _dateField(),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
-          child: Row(
-            children: <Widget>[
-              FlatButton.icon(
-                icon: Icon(Icons.timer),
-                label: Text('start'),
-                onPressed: () {
-                  _selectTime(PointInDive.start);
-                },
-              ),
-              Expanded(
-                child: TextFormField(
-                  onTap: () {
-                    _selectTime(PointInDive.start);
-                  },
-                  controller: _startController,
-                  readOnly: true,
-                  decoration: InputDecoration(border: OutlineInputBorder()),
-                  validator: FormValidators.start,
-                ),
-              ),
-            ],
-          ),
-        ),
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
+            child: _startTimeField()),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 4.0),
-          child: Row(
-            children: <Widget>[
-              FlatButton.icon(
-                icon: Icon(Icons.timer),
-                label: Text('end'),
-                onPressed: () {
-                  _selectTime(PointInDive.stop);
-                },
-              ),
-              Expanded(
-                child: TextFormField(
-                  onTap: () {
-                    _selectTime(PointInDive.stop);
-                  },
-                  controller: _endController,
-                  readOnly: true,
-                  decoration: InputDecoration(border: OutlineInputBorder()),
-                  validator: FormValidators.end,
-                ),
-              ),
-            ],
-          ),
+          child: _endTimeField(),
         ),
       ]),
     );
   }
 
-  _dateField() {
+  Widget _endTimeField() {
     return FormField(
-      builder: (FormFieldState<String> state) {
+      initialValue: TextEditingController(text: ''),
+      builder: (FormFieldState<TextEditingController> state) {
+        return Row(
+          children: <Widget>[
+            FlatButton.icon(
+              icon: Icon(Icons.timer),
+              label: Text('end'),
+              onPressed: () async {
+                TextEditingController endController = state.value;
+                endController.text = await _selectTime();
+                state.didChange(endController);
+              },
+            ),
+            Expanded(
+              child: TextFormField(
+                onTap: () async {
+                  TextEditingController endController = state.value;
+                  endController.text = await _selectTime();
+                  state.didChange(endController);
+                },
+                controller: state.value,
+                readOnly: true,
+                decoration: InputDecoration(border: OutlineInputBorder()),
+                validator: FormValidators.end,
+              ),
+            ),
+          ],
+        );
+      },
+      onSaved: (TextEditingController result) {
+        endResult(result.text);
+      },
+    );
+  }
+
+  Widget _startTimeField() {
+    return FormField(
+      initialValue: TextEditingController(text: ''),
+      builder: (FormFieldState<TextEditingController> state) {
+        return Row(
+          children: <Widget>[
+            FlatButton.icon(
+              icon: Icon(Icons.timer),
+              label: Text('start'),
+              onPressed: () async {
+                TextEditingController startController = state.value;
+                startController.text = await _selectTime();
+                state.didChange(startController);
+              },
+            ),
+            Expanded(
+              child: TextFormField(
+                onTap: () async {
+                  TextEditingController startController = state.value;
+                  startController.text = await _selectTime();
+                  state.didChange(startController);
+                },
+                controller: state.value,
+                readOnly: true,
+                decoration: InputDecoration(border: OutlineInputBorder()),
+                validator: FormValidators.start,
+              ),
+            ),
+          ],
+        );
+      },
+      onSaved: (TextEditingController result) {
+        startResult(result.text);
+      },
+    );
+  }
+
+  Widget _dateField() {
+    return FormField(
+      initialValue: TextEditingController(text: ''),
+      builder: (FormFieldState<TextEditingController> state) {
         return Row(
           children: <Widget>[
             FlatButton.icon(
               icon: Icon(Icons.calendar_today),
               label: Text('date'),
-              onPressed: _selectDate,
+              onPressed: () async {
+                TextEditingController dateController = state.value;
+                dateController.text = await _selectDate();
+                state.didChange(dateController);
+              },
             ),
             Expanded(
-              child: TextFormField(
-                onTap: _selectDate,
-                controller: _dateController,
+              child: TextField(
+                onTap: () async {
+                  TextEditingController dateController = state.value;
+                  dateController.text = await _selectDate();
+                  state.didChange(dateController);
+                },
+                controller: state.value,
                 readOnly: true,
                 decoration: InputDecoration(border: OutlineInputBorder()),
-                validator: FormValidators.date,
               ),
             ),
           ],
         );
+      },
+      onSaved: (TextEditingController result) {
+        dateResult(result.text);
       },
     );
   }
