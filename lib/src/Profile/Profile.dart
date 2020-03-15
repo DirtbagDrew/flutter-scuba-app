@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:scuba/shared/FormValidators.dart';
 import 'package:scuba/src/Profile/Bio.dart';
+import 'package:scuba/src/Profile/PersonalCertifications.dart';
 import 'package:scuba/src/Profile/PersonalDives.dart';
 
 class Profile extends StatelessWidget {
@@ -21,6 +22,7 @@ class Profile extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(children: <Widget>[
         Bio(),
+        PersonalCertifications(),
         PersonalDives(),
       ]),
     );
