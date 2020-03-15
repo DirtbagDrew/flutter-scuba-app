@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:scuba/models/LogEntryFormData.dart';
 import 'package:scuba/models/LogFormStepController.dart';
-import 'package:scuba/shared/Conversions.dart';
 import 'package:scuba/src/LogEntryForm/CommentsForm.dart';
 import 'package:scuba/src/LogEntryForm/ConditionsForm.dart';
 import 'package:scuba/src/LogEntryForm/EquipmentForm.dart';
 import 'package:scuba/src/LogEntryForm/LocationForm.dart';
-import 'LogEntryForm/DateTimeForm.dart';
+import 'package:scuba/src/LogEntryForm/TitleForm.dart';
+import 'DateTimeForm.dart';
 
 class LogEntryForm extends StatefulWidget {
   const LogEntryForm({Key key}) : super(key: key);
@@ -21,6 +21,7 @@ class _LogEntryFormState extends State<LogEntryForm> {
   LogEntryData _logEntryData = LogEntryData();
 
   List<LogFormStepController> _stepControllers = [
+    LogFormStepController(),
     LogFormStepController(),
     LogFormStepController(),
     LogFormStepController(),
@@ -71,47 +72,84 @@ class _LogEntryFormState extends State<LogEntryForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Stepper(
-      currentStep: _currentStep,
-      onStepContinue: _continue,
-      onStepTapped: (int stepNumber) {
-        _goToStep(stepNumber);
-      },
-      steps: _mySteps(),
-      controlsBuilder: (BuildContext context,
-          {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
-        return Row(
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(right: 12.0),
-              child: RaisedButton(
-                onPressed: _back,
-                child: const Text('Back'),
+    return ListView(
+      children: <Widget>[
+        Container(
+          color: Theme.of(context).primaryColor,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: Align(
+              alignment: Alignment.center,
+              child: Text(
+                'New Log Entry',
+                style: Theme.of(context).textTheme.headline,
               ),
             ),
-            RaisedButton(
-              onPressed: _continue,
-              child: const Text('Next'),
-            ),
-          ],
-        );
-      },
+          ),
+        ),
+        Stepper(
+          physics: ClampingScrollPhysics(),
+          currentStep: _currentStep,
+          onStepContinue: _continue,
+          onStepTapped: (int stepNumber) {
+            _goToStep(stepNumber);
+          },
+          steps: _mySteps(),
+          controlsBuilder: (BuildContext context,
+              {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
+            return Row(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                _currentStep != 0
+                    ? Padding(
+                        padding: const EdgeInsets.only(right: 12.0),
+                        child: RaisedButton(
+                          onPressed: _back,
+                          child: const Text('Back'),
+                        ),
+                      )
+                    : Container(),
+                RaisedButton(
+                  onPressed: _continue,
+                  child: Text(_currentStep == _mySteps().length - 1
+                      ? 'submit'
+                      : 'Next'),
+                ),
+              ],
+            );
+          },
+        ),
+      ],
     );
   }
 
   List<Step> _mySteps() {
     List<Step> _steps = [
       Step(
+          title: Text(
+            'Title',
+          ),
+          isActive: _currentStep == 0,
+          state: _stepControllers[0].state,
+          content: TitleForm(
+            autoValidate: _stepControllers[0].autoValidate,
+            titleResult: (String result) {
+              setState(() {
+                _logEntryData.title = result;
+              });
+            },
+            formKey: _stepControllers[0].formKey,
+          )),
+      Step(
         title: Text(
           'Time and Date',
         ),
-        isActive: _currentStep == 0,
-        state: _stepControllers[0].state,
+        isActive: _currentStep == 1,
+        state: _stepControllers[1].state,
         content: DateTimeForm(
           context: context,
-          formKey: _stepControllers[0].formKey,
-          autoValidate: _stepControllers[0].autoValidate,
+          formKey: _stepControllers[1].formKey,
+          autoValidate: _stepControllers[1].autoValidate,
           dateResult: (DateTime result) {
             setState(() {
               _logEntryData.date = result;
@@ -133,11 +171,11 @@ class _LogEntryFormState extends State<LogEntryForm> {
         title: Text(
           'Location',
         ),
-        isActive: _currentStep == 1,
-        state: _stepControllers[1].state,
+        isActive: _currentStep == 2,
+        state: _stepControllers[2].state,
         content: LocationForm(
-          formKey: _stepControllers[1].formKey,
-          autoValidate: _stepControllers[1].autoValidate,
+          formKey: _stepControllers[2].formKey,
+          autoValidate: _stepControllers[2].autoValidate,
           nameResult: (String result) {
             setState(() {
               _logEntryData.locationName = result;
@@ -154,11 +192,11 @@ class _LogEntryFormState extends State<LogEntryForm> {
         title: Text(
           'Conditions',
         ),
-        isActive: _currentStep == 2,
-        state: _stepControllers[2].state,
+        isActive: _currentStep == 3,
+        state: _stepControllers[3].state,
         content: ConditionsForm(
-          formKey: _stepControllers[2].formKey,
-          autoValidate: _stepControllers[2].autoValidate,
+          formKey: _stepControllers[3].formKey,
+          autoValidate: _stepControllers[3].autoValidate,
           airTempResult: (int value) {
             setState(() {
               _logEntryData.airTemp.measurement = value;
@@ -191,15 +229,16 @@ class _LogEntryFormState extends State<LogEntryForm> {
               _logEntryData.visibility.units = value;
             });
           },
+          context: context,
         ),
       ),
       Step(
           title: Text('Equipment'),
-          isActive: _currentStep == 3,
-          state: _stepControllers[3].state,
+          isActive: _currentStep == 4,
+          state: _stepControllers[4].state,
           content: EquipmentForm(
-            formKey: _stepControllers[3].formKey,
-            autoValidate: _stepControllers[3].autoValidate,
+            formKey: _stepControllers[4].formKey,
+            autoValidate: _stepControllers[4].autoValidate,
             pressureUnitsResult: (String value) {
               setState(() {
                 _logEntryData.weight.units = value;
@@ -230,11 +269,11 @@ class _LogEntryFormState extends State<LogEntryForm> {
         title: Text(
           'Comments',
         ),
-        isActive: _currentStep == 4,
-        state: _stepControllers[4].state,
+        isActive: _currentStep == 5,
+        state: _stepControllers[5].state,
         content: CommentsForm(
-          formKey: _stepControllers[4].formKey,
-          autoValidate: _stepControllers[4].autoValidate,
+          formKey: _stepControllers[5].formKey,
+          autoValidate: _stepControllers[5].autoValidate,
           commentsResult: (String value) {
             setState(() {
               _logEntryData.weight.measurement = int.parse(value);

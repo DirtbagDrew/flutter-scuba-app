@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -16,6 +18,7 @@ class ConditionsForm extends StatelessWidget {
     @required this.tempUnitsResult,
     @required this.visibilityResult,
     @required this.visibilityUnitsResult,
+    @required this.context,
   }) : super(key: key);
 
   final bool autoValidate;
@@ -26,6 +29,7 @@ class ConditionsForm extends StatelessWidget {
   final ValueChanged<int> visibilityResult;
   final ValueChanged<String> tempUnitsResult;
   final ValueChanged<String> visibilityUnitsResult;
+  final BuildContext context;
 
   InputDecoration _decoration(String s) {
     return InputDecoration(
@@ -42,14 +46,7 @@ class ConditionsForm extends StatelessWidget {
         autovalidate: autoValidate,
         key: formKey,
         child: Column(children: <Widget>[
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: visibilityField(),
-              ),
-              _visibilityUnitsField(),
-            ],
-          ),
+          visibilityField(),
           Row(
             children: <Widget>[
               Text('Temperatures'),
@@ -154,12 +151,45 @@ class ConditionsForm extends StatelessWidget {
   }
 
   Widget visibilityField() {
-    return NumberTextFormField(
-      decoration: _decoration('Visibility'),
-      validator: FormValidators.visibility,
-      onSaved: (String result) {
-        visibilityResult(int.parse(result));
-      },
+    return Column(
+      children: <Widget>[
+        FormField(
+          initialValue: 0.0,
+          builder: (FormFieldState<double> state) {
+            return Column(
+              children: <Widget>[
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Visiblity",
+                    style: Theme.of(context).textTheme.subhead,
+                  ),
+                ),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                        child: Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: Text(state.value.toInt().toString()),
+                    )),
+                    _visibilityUnitsField()
+                  ],
+                ),
+                Slider(
+                  value: state.value,
+                  onChanged: (double value) {
+                    state.didChange(value);
+                  },
+                  max: 1000,
+                ),
+              ],
+            );
+          },
+          onSaved: (double result) {
+            visibilityResult(result.toInt());
+          },
+        ),
+      ],
     );
   }
 
@@ -167,11 +197,11 @@ class ConditionsForm extends StatelessWidget {
     return FormField(
       initialValue: LengthUnits.ft,
       builder: (FormFieldState<String> state) {
-        return Column(
+        return Row(
           children: <Widget>[
             SizedBox(
               height: 35,
-              width: 115,
+              width: 100,
               child: RadioListTile(
                 value: LengthUnits.ft,
                 groupValue: state.value,
@@ -182,7 +212,8 @@ class ConditionsForm extends StatelessWidget {
               ),
             ),
             SizedBox(
-              width: 115,
+              height: 35,
+              width: 100,
               child: RadioListTile(
                 title: Text('m'),
                 value: LengthUnits.m,

@@ -96,4 +96,11 @@ class FormValidators {
     }
     return null;
   }
+
+  static String title(value) {
+    if (value.isEmpty) {
+      return 'please enter some text';
+    }
+    return null;
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class Conversions {
   static TimeOfDay timeStringToTimeOfDay(String timeString) {
@@ -22,5 +23,9 @@ class Conversions {
 
   static int timeOfDayToInt(TimeOfDay timeOfDay) {
     return timeOfDay.hour * 60 + timeOfDay.minute;
+  }
+
+  static String dateTimeToString(DateTime date) {
+    return DateFormat("MM/dd/yyyy").format(date);
   }
 }

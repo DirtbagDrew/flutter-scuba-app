@@ -31,7 +31,7 @@ class DateTimeForm extends StatelessWidget {
       lastDate: DateTime.now(),
     );
     if (date != null) {
-      return DateFormat("MM/dd/yyyy").format(date);
+      return Conversions.dateTimeToString(date);
     }
     return '';
   }
@@ -179,15 +179,18 @@ class DateTimeForm extends StatelessWidget {
         );
       },
       validator: (List<TextEditingController> stateValue) {
-        TimeOfDay startTime =
-            Conversions.timeStringToTimeOfDay(stateValue[0].text);
-        TimeOfDay endTime =
-            Conversions.timeStringToTimeOfDay(stateValue[1].text);
+        if (stateValue[0].text != "" && stateValue[1].text != "") {
+          TimeOfDay startTime =
+              Conversions.timeStringToTimeOfDay(stateValue[0].text);
+          TimeOfDay endTime =
+              Conversions.timeStringToTimeOfDay(stateValue[1].text);
 
-        if (Conversions.timeOfDayToInt(startTime) >
-            Conversions.timeOfDayToInt(endTime)) {
-          return "Invalid end time.";
+          if (Conversions.timeOfDayToInt(startTime) >
+              Conversions.timeOfDayToInt(endTime)) {
+            return "Invalid end time.";
+          }
         }
+
         return null;
       },
       onSaved: (List<TextEditingController> result) {

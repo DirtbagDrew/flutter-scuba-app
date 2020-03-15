@@ -11,6 +11,7 @@ class LogEntryData {
   Reading weight;
   String location;
   String locationName;
+  String title;
   TimeOfDay endTime;
   TimeOfDay startTime;
 
