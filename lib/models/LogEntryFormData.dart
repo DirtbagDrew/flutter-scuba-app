@@ -4,8 +4,8 @@ class LogEntryData {
   DateTime date;
   Reading airTemp;
   Reading bottomTemp;
-  Reading endingAir;
-  Reading startingAir;
+  Reading endAir;
+  Reading startAir;
   Reading surfaceTemp;
   Reading visibility;
   Reading weight;
@@ -18,8 +18,8 @@ class LogEntryData {
   LogEntryData() {
     airTemp = Reading();
     bottomTemp = Reading();
-    endingAir = Reading();
-    startingAir = Reading();
+    endAir = Reading();
+    startAir = Reading();
     surfaceTemp = Reading();
     visibility = Reading();
     weight = Reading();

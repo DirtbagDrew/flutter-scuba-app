@@ -251,12 +251,12 @@ class _LogEntryFormState extends State<LogEntryForm> {
             },
             endingAirResult: (int value) {
               setState(() {
-                _logEntryData.startingAir.measurement = value;
+                _logEntryData.startAir.measurement = value;
               });
             },
             startingAirResult: (int value) {
               setState(() {
-                _logEntryData.endingAir.measurement = value;
+                _logEntryData.endAir.measurement = value;
               });
             },
             weightResult: (int value) {
