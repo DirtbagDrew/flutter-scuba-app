@@ -16,6 +16,10 @@ class Profile extends StatelessWidget {
     return await SharedPreferences.getInstance();
   }
 
+  _logout() {
+    var pref = _getSharedPreferences();
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -25,9 +29,9 @@ class Profile extends StatelessWidget {
           String getUser = """
             query getUser(\$userId: String!){
               user(userId:\$userId){
-                user_id
-                first_name
-                last_name
+                userId
+                firstName
+                lastName
               }
             }
             """;
@@ -53,15 +57,20 @@ class Profile extends StatelessWidget {
                 }
 
                 Map user = result.data['user'];
-                return SingleChildScrollView(
-                  child: Column(children: <Widget>[
-                    Bio(
-                        firstName: user['first_name'],
-                        lastName: user['last_name']),
-                    PersonalCertifications(),
-                    PersonalDives(),
-                  ]),
-                );
+                if (user == null) {
+                  snapshot.data.clear();
+                  return CircularProgressIndicator();
+                } else {
+                  return SingleChildScrollView(
+                    child: Column(children: <Widget>[
+                      Bio(
+                          firstName: user['firstName'],
+                          lastName: user['lastName']),
+                      PersonalCertifications(),
+                      PersonalDives(),
+                    ]),
+                  );
+                }
               });
         }
         return Center(

@@ -51,7 +51,7 @@ class _LoginState extends State<Login> {
             String getUser = """
               query getUser(\$userId: String!){
                 user(userId:\$userId){
-                  user_id
+                  userId
                 }
               }
             """;
@@ -80,7 +80,7 @@ class _LoginState extends State<Login> {
                 if (user != null) {
                   SchedulerBinding.instance
                       .addPostFrameCallback((_) => setState(() {
-                            onFacebookLoggedIn(user['user_id']);
+                            onFacebookLoggedIn(user['userId']);
                           }));
                 } else {
                   String registerUser = """
