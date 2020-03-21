@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class Bio extends StatelessWidget {
-  const Bio({
-    Key key,
-  }) : super(key: key);
+  const Bio({Key key, @required this.firstName, @required this.lastName})
+      : super(key: key);
+
+  final String firstName;
+  final String lastName;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,7 @@ class Bio extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Text(
-                "Andrew Myer",
+                "$firstName $lastName",
                 style: Theme.of(context).textTheme.title,
               ),
             ),

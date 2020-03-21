@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'LogEntryForm/LogEntryForm.dart';
 import 'Profile/Profile.dart';
 
