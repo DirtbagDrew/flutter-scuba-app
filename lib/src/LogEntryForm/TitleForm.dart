@@ -32,8 +32,12 @@ class TitleForm extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4.0),
             child: TextFormField(
-                decoration: _decoration('Title'),
-                validator: FormValidators.title),
+              decoration: _decoration('Title'),
+              validator: FormValidators.title,
+              onSaved: (result) {
+                titleResult(result);
+              },
+            ),
           ),
         ]),
       ),

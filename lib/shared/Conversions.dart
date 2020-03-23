@@ -8,17 +8,29 @@ class Conversions {
         .split(':')
         .map((String s) => numbersOnly.firstMatch(s).group(0))
         .toList();
+    var isPM = RegExp(r'([A-Z])\w+').firstMatch(timeString).group(0) == 'PM';
 
     return TimeOfDay(
-        hour: int.parse(splitString[0]), minute: int.parse(splitString[1]));
+        hour: int.parse(splitString[0]) + (isPM ? 12 : 0),
+        minute: int.parse(splitString[1]));
   }
 
   static DateTime dateStringToDateTime(String dateString) {
     List<String> splitDateString = dateString.split('/');
     int year = int.parse(splitDateString[2]);
-    int month = int.parse(splitDateString[1]);
-    int day = int.parse(splitDateString[0]);
-    return DateTime(year, month, day);
+    int month = int.parse(splitDateString[0]);
+    int day = int.parse(splitDateString[1]);
+    return DateTime.utc(year, month, day);
+  }
+
+  static int minutesBetweenTimeString(
+      String startTimeString, String endTimeString) {
+    var startSplitString = startTimeString.split(':');
+    var endSplitString = endTimeString.split(':');
+    var hourDiff =
+        int.parse(endSplitString[0]) - int.parse(startSplitString[0]);
+    var minDiff = int.parse(endSplitString[1]) - int.parse(startSplitString[1]);
+    return hourDiff * 60 + minDiff;
   }
 
   static int timeOfDayToInt(TimeOfDay timeOfDay) {

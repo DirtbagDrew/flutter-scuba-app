@@ -30,7 +30,7 @@ class Bio extends StatelessWidget {
               ),
             ),
             Text(
-              "I am the best scuber duber in the world! Heather is a super duper cool dive buddy",
+              "scuba diver",
               style: Theme.of(context).textTheme.subtitle,
             )
           ],
