@@ -83,58 +83,40 @@ class _LogEntryFormState extends State<LogEntryForm> {
         future: _getSharedPreferences(),
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.hasData && snapshot.data.getString('id') != null) {
-            return ListView(
-              children: <Widget>[
-                Container(
-                  color: Theme.of(context).primaryColor,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        'New Log Entry',
-                        style: Theme.of(context).textTheme.headline,
-                      ),
-                    ),
-                  ),
-                ),
-                Stepper(
-                  physics: ClampingScrollPhysics(),
-                  currentStep: _currentStep,
-                  onStepContinue: _continue,
-                  onStepTapped: (int stepNumber) {
-                    _goToStep(stepNumber);
-                  },
-                  steps: _mySteps(),
-                  controlsBuilder: (BuildContext context,
-                      {VoidCallback onStepContinue,
-                      VoidCallback onStepCancel}) {
-                    return Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        _currentStep != 0
-                            ? Padding(
-                                padding: const EdgeInsets.only(right: 12.0),
-                                child: RaisedButton(
-                                  onPressed: _back,
-                                  child: const Text('Back'),
-                                ),
-                              )
-                            : Container(),
-                        _currentStep == _mySteps().length - 1
-                            ? LogEntrySubmitButton(
-                                logEntryData: _logEntryData,
-                                userId: snapshot.data.getString('id'),
-                              )
-                            : RaisedButton(
-                                onPressed: _continue,
-                                child: Text('Next'),
-                              )
-                      ],
-                    );
-                  },
-                ),
-              ],
+            return Stepper(
+              physics: ClampingScrollPhysics(),
+              currentStep: _currentStep,
+              onStepContinue: _continue,
+              onStepTapped: (int stepNumber) {
+                _goToStep(stepNumber);
+              },
+              steps: _mySteps(),
+              controlsBuilder: (BuildContext context,
+                  {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
+                return Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    _currentStep != 0
+                        ? Padding(
+                            padding: const EdgeInsets.only(right: 12.0),
+                            child: RaisedButton(
+                              onPressed: _back,
+                              child: const Text('Back'),
+                            ),
+                          )
+                        : Container(),
+                    _currentStep == _mySteps().length - 1
+                        ? LogEntrySubmitButton(
+                            logEntryData: _logEntryData,
+                            userId: snapshot.data.getString('id'),
+                          )
+                        : RaisedButton(
+                            onPressed: _continue,
+                            child: Text('Next'),
+                          )
+                  ],
+                );
+              },
             );
           }
           return CircularProgressIndicator();

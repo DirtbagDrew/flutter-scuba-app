@@ -71,7 +71,7 @@ class _ProfileState extends State<Profile> {
 
             return SingleChildScrollView(
               child: Column(children: <Widget>[
-                // Bio(firstName: user['firstName'], lastName: user['lastName']),
+                Bio(firstName: user['firstName'], lastName: user['lastName']),
                 // PersonalCertifications(),
                 PersonalDives(
                   userId: id,

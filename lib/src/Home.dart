@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'LogEntryForm/LogEntryForm.dart';
 import 'Profile/Profile.dart';
 
@@ -28,7 +26,16 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages.elementAt(_selectedIndex),
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            title: Text("<LOGO HERE>"),
+          ),
+          SliverToBoxAdapter(
+            child: _pages.elementAt(_selectedIndex),
+          ),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           // BottomNavigationBarItem(
@@ -37,7 +44,7 @@ class _HomeState extends State<Home> {
           // ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add_circle),
-            title: Text('Add to Log'),
+            title: Text('Log New Dive'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
