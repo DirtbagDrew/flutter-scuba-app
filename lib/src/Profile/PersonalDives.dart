@@ -64,44 +64,46 @@ class PersonalDives extends StatelessWidget {
                   }
                   List logEntries = result.data['logEntries'];
 
-                  return ListView(
-                      children: logEntries
-                          .map((logEntry) => ListTile(
-                                title: Text(
-                                  logEntry['title'],
-                                  style: Theme.of(context).textTheme.subhead,
-                                ),
-                                subtitle: Column(
-                                  children: <Widget>[
-                                    Row(
-                                      children: <Widget>[
-                                        Text("Date: "),
-                                        Text(Conversions.dateTimeToString(
-                                            DateTime.fromMicrosecondsSinceEpoch(
-                                                int.parse(logEntry['date']) *
-                                                    1000)))
-                                      ],
-                                    ),
-                                    Row(
-                                      children: <Widget>[
-                                        Text("Dive Spot: "),
-                                        Text(
-                                            "${logEntry['locationName']}, ${logEntry['location']}")
-                                      ],
-                                    ),
-                                    Row(
-                                      children: <Widget>[
-                                        Text("Duration: "),
-                                        Text(
-                                            "${Conversions.minutesBetweenTimeString(logEntry['startTime'], logEntry['endTime'])} minutes")
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ))
-                          .toList());
+                  return ListView(children: _logEntries(logEntries, context));
                 })),
       ],
     );
+  }
+
+  List<Widget> _logEntries(List logEntries, BuildContext context) {
+    return logEntries
+        .map((logEntry) => ListTile(
+              title: Text(
+                logEntry['title'],
+                style: Theme.of(context).textTheme.subhead,
+              ),
+              subtitle: Column(
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Text("Date: "),
+                      Text(Conversions.dateTimeToString(
+                          DateTime.fromMicrosecondsSinceEpoch(
+                              int.parse(logEntry['date']) * 1000)))
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Text("Dive Spot: "),
+                      Text(
+                          "${logEntry['locationName']}, ${logEntry['location']}")
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Text("Duration: "),
+                      Text(
+                          "${Conversions.minutesBetweenTimeString(logEntry['startTime'], logEntry['endTime'])} minutes")
+                    ],
+                  )
+                ],
+              ),
+            ))
+        .toList();
   }
 }
