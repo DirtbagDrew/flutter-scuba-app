@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
             // pref.clear();
 
             if (snapshot.data.getString('id') != null || _verified) {
-              return Home();
+              return LogEntryForm();
             } else {
               return Login(
                 idResult: (String result) {

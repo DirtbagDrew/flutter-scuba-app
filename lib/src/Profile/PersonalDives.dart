@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:scuba/shared/Conversions.dart';
+import 'package:scuba/src/Profile/DiveEntryDetails.dart';
 
 class PersonalDives extends StatelessWidget {
   const PersonalDives({Key key, @required this.userId}) : super(key: key);
@@ -13,6 +14,7 @@ class PersonalDives extends StatelessWidget {
     String getUserLogEntries = """
     query getUserLogEntries(\$userId:String!){
       logEntries(userId:\$userId){
+        id
         title
         date
         locationName
@@ -103,6 +105,16 @@ class PersonalDives extends StatelessWidget {
                   )
                 ],
               ),
+              onTap: () {
+                print(logEntry['id']);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => DiveEntryDetails(
+                            logEntryId: int.parse(logEntry['id']),
+                          )),
+                );
+              },
             ))
         .toList();
   }
