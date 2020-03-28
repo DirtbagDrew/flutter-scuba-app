@@ -115,6 +115,9 @@ class _LogEntryFormState extends State<LogEntryForm> {
                               ? LogEntrySubmitButton(
                                   logEntryData: _logEntryData,
                                   userId: snapshot.data.getString('id'),
+                                  buttonPressed: (result) {
+                                    _continue();
+                                  },
                                 )
                               : RaisedButton(
                                   onPressed: _continue,
@@ -284,9 +287,9 @@ class _LogEntryFormState extends State<LogEntryForm> {
         content: CommentsForm(
           formKey: _stepControllers[5].formKey,
           autoValidate: _stepControllers[5].autoValidate,
-          commentsResult: (String value) {
+          commentsResult: (value) {
             setState(() {
-              _logEntryData.weight.measurement = int.parse(value);
+              _logEntryData.comments = value;
             });
           },
         ),

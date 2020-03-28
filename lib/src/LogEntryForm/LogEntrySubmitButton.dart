@@ -8,10 +8,12 @@ class LogEntrySubmitButton extends StatelessWidget {
     Key key,
     @required this.logEntryData,
     @required this.userId,
+    @required this.buttonPressed,
   }) : super(key: key);
 
   final LogEntryData logEntryData;
   final String userId;
+  final ValueChanged buttonPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +41,10 @@ class LogEntrySubmitButton extends StatelessWidget {
       ) {
         return RaisedButton(
           onPressed: () {
-            _submitLogEntry(context, runMutation);
+            buttonPressed(true);
+            if (logEntryData.comments != null) {
+              _submitLogEntry(context, runMutation);
+            }
           },
           child: Text('Submit'),
         );
@@ -84,7 +89,8 @@ class LogEntrySubmitButton extends StatelessWidget {
         "weight": {
           "measurement": logEntryData.weight.measurement,
           "units": logEntryData.weight.units
-        }
+        },
+        "comments": logEntryData.comments
       }
     });
   }

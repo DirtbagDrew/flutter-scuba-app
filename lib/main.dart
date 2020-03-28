@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scuba/src/Home.dart';
 import 'package:scuba/src/LoginRegister/Login.dart';
-import 'package:scuba/src/Profile/Profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'src/LogEntryForm/LogEntryForm.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';

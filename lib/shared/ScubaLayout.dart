@@ -5,10 +5,15 @@ import 'package:scuba/src/LogEntryForm/LogEntryForm.dart';
 import 'package:scuba/src/Profile/Profile.dart';
 
 class ScubaLayout extends StatelessWidget {
-  const ScubaLayout({Key key, @required this.slivers, this.selectedIndex})
+  const ScubaLayout(
+      {Key key,
+      @required this.slivers,
+      this.selectedIndex,
+      this.automaticallyImplyLeading = false})
       : super(key: key);
   final List<Widget> slivers;
   final int selectedIndex;
+  final bool automaticallyImplyLeading;
   void _onItemTapped(BuildContext context, int index) {
     if (index != selectedIndex) {
       Widget result = LogEntryForm();
@@ -28,6 +33,7 @@ class ScubaLayout extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
+            automaticallyImplyLeading: automaticallyImplyLeading,
             title: Text("<LOGO HERE>"),
           ),
           ...slivers

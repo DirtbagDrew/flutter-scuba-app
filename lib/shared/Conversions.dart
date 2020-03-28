@@ -40,4 +40,24 @@ class Conversions {
   static String dateTimeToString(DateTime date) {
     return DateFormat("MM/dd/yyyy").format(date);
   }
+
+  static String dateFromDBFormat(String dbDate) {
+    return dateTimeToString(
+        DateTime.fromMicrosecondsSinceEpoch(int.parse(dbDate) * 1000));
+  }
+
+  static String timeStringFromDBFormat(String dbTime) {
+    var list = dbTime.split(':');
+    var hour = int.parse(list[0]) > 12 ? int.parse(list[0]) - 12 : list[0];
+    var isPM = int.parse(dbTime[0]) > 11;
+    return '${hour}:${list[1]}${isPM ? 'PM' : 'AM'}';
+  }
+
+  static String shortHandTemp(String longTemp) {
+    var shortTemp = 'F';
+    if (longTemp == 'Celcius') {
+      shortTemp = 'C';
+    }
+    return shortTemp;
+  }
 }

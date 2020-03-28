@@ -84,9 +84,7 @@ class PersonalDives extends StatelessWidget {
                   Row(
                     children: <Widget>[
                       Text("Date: "),
-                      Text(Conversions.dateTimeToString(
-                          DateTime.fromMicrosecondsSinceEpoch(
-                              int.parse(logEntry['date']) * 1000)))
+                      Text(Conversions.dateFromDBFormat(logEntry['date']))
                     ],
                   ),
                   Row(

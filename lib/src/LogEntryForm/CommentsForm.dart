@@ -12,7 +12,7 @@ class CommentsForm extends StatelessWidget {
 
   final GlobalKey<FormState> formKey;
   final bool autoValidate;
-  final ValueChanged<String> commentsResult;
+  final ValueChanged commentsResult;
 
   _decoration(String s) {
     return InputDecoration(
@@ -32,10 +32,14 @@ class CommentsForm extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4.0),
             child: TextFormField(
-                minLines: 5,
-                maxLines: 5,
-                decoration: _decoration('Comments'),
-                validator: FormValidators.comments),
+              minLines: 5,
+              maxLines: 5,
+              decoration: _decoration('Comments'),
+              validator: FormValidators.comments,
+              onSaved: (result) {
+                commentsResult(result);
+              },
+            ),
           ),
         ]),
       ),
