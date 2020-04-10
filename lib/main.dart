@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final HttpLink httpLink = HttpLink(
-      uri: 'http://192.168.99.1:4000/graphql',
+      uri: 'http://192.168.254.15:4000/graphql',
     );
 
     ValueNotifier<GraphQLClient> client = ValueNotifier(

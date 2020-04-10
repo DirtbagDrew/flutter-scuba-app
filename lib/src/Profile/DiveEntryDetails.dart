@@ -104,29 +104,18 @@ class DiveEntryDetails extends StatelessWidget {
                                 logEntry['title'],
                                 style: Theme.of(context).textTheme.title,
                               ),
-                              Row(
-                                children: <Widget>[
-                                  Flexible(
-                                    child: RichText(
-                                        text: TextSpan(
-                                            text:
-                                                logEntry['locationName'] + ', ',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .subtitle,
-                                            children: [
-                                          TextSpan(
-                                            text: logEntry['location'] + ', ',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .subtitle
-                                                .copyWith(
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Colors.grey[600]),
-                                          ),
-                                        ])),
-                                  ),
-                                ],
+                              Text(
+                                logEntry['locationName'],
+                                style: Theme.of(context).textTheme.subtitle,
+                              ),
+                              Text(
+                                logEntry['location'],
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle
+                                    .copyWith(
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.grey[600]),
                               ),
                               Padding(
                                 padding:
