@@ -5,9 +5,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:scuba/shared/IDGetter.dart';
 import 'package:scuba/shared/ScubaLayout.dart';
 import 'package:scuba/src/Profile/Bio.dart';
-import 'package:scuba/src/Profile/PersonalCertifications.dart';
 import 'package:scuba/src/Profile/PersonalDives.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'LogOutButton.dart';
 

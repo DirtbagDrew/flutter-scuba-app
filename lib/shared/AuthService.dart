@@ -13,7 +13,10 @@ class AuthService {
 
   Future<String> getUserId() async {
     var accessToken = await facebookLogin.currentAccessToken;
-    return 'F' + accessToken.userId;
+    if (accessToken != null) {
+      return 'F' + accessToken.userId;
+    }
+    return '';
   }
 
   Future<bool> isLoggedIn() async {

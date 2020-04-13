@@ -7,7 +7,6 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:http/http.dart' as http;
 import 'package:scuba/shared/AuthService.dart';
 import 'package:scuba/src/LogEntryForm/LogEntryForm.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Login extends StatefulWidget {

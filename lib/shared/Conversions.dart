@@ -50,7 +50,7 @@ class Conversions {
     var list = dbTime.split(':');
     var hour = int.parse(list[0]) > 12 ? int.parse(list[0]) - 12 : list[0];
     var isPM = int.parse(dbTime[0]) > 11;
-    return '${hour}:${list[1]}${isPM ? 'PM' : 'AM'}';
+    return '$hour:${list[1]}${isPM ? 'PM' : 'AM'}';
   }
 
   static String shortHandTemp(String longTemp) {

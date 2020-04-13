@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_stetho/flutter_stetho.dart';
 import 'package:scuba/shared/AuthService.dart';
 import 'package:scuba/src/LoginRegister/Login.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'src/LogEntryForm/LogEntryForm.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 

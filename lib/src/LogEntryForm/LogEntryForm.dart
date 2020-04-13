@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:scuba/models/LogEntryFormData.dart';
 import 'package:scuba/models/LogFormStepController.dart';
-import 'package:scuba/shared/AuthService.dart';
 import 'package:scuba/shared/ScubaLayout.dart';
 import 'package:scuba/src/LogEntryForm/CommentsForm.dart';
 import 'package:scuba/src/LogEntryForm/ConditionsForm.dart';
@@ -11,7 +9,6 @@ import 'package:scuba/src/LogEntryForm/EquipmentForm.dart';
 import 'package:scuba/src/LogEntryForm/LocationForm.dart';
 import 'package:scuba/src/LogEntryForm/LogEntrySubmitButton.dart';
 import 'package:scuba/src/LogEntryForm/TitleForm.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'DateTimeForm.dart';
 
 class LogEntryForm extends StatefulWidget {
@@ -24,7 +21,6 @@ class LogEntryForm extends StatefulWidget {
 class _LogEntryFormState extends State<LogEntryForm> {
   int _currentStep = 0;
   LogEntryData _logEntryData = LogEntryData();
-  AuthService _auth = AuthService();
 
   List<LogFormStepController> _stepControllers = [
     LogFormStepController(),

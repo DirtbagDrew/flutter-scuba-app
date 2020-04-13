@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:intl/intl.dart';
 import 'package:scuba/shared/Conversions.dart';
 import 'package:scuba/shared/FormValidators.dart';
 

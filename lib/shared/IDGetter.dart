@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:scuba/shared/AuthService.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class IDGetter extends StatelessWidget {
   const IDGetter({Key key, @required this.child, @required this.idEmitter})
@@ -17,7 +16,7 @@ class IDGetter extends StatelessWidget {
     return FutureBuilder(
       future: _auth.getUserId(),
       builder: (context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData) {
+        if (snapshot.hasData && snapshot.data != '') {
           idEmitter(snapshot.data);
           return child;
         }
