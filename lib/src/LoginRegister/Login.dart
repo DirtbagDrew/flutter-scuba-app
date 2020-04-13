@@ -5,34 +5,31 @@ import 'package:flutter/widgets.dart';
 import 'package:scuba/models/FacebookProfile.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:http/http.dart' as http;
+import 'package:scuba/shared/AuthService.dart';
+import 'package:scuba/src/LogEntryForm/LogEntryForm.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Login extends StatefulWidget {
-  const Login({Key key, @required this.idResult}) : super(key: key);
-
-  final ValueChanged<String> idResult;
+  const Login({Key key}) : super(key: key);
 
   @override
   _LoginState createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
+  AuthService _auth = AuthService();
   FacebookProfile _facebookProfile;
 
-  void _setInSharedPreferences(String item, value) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString(item, value);
-  }
-
-  void onFacebookLoggedIn(String id) {
-    _setInSharedPreferences('id', id);
-    widget.idResult(id);
+  void onFacebookLoggedIn(String id, BuildContext context) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LogEntryForm()),
+    );
   }
 
   void initiateFacebookLogin() async {
-    var facebookLogin = FacebookLogin();
-    var facebookLoginResult = await facebookLogin.logIn(['email']);
+    var facebookLoginResult = await _auth.login();
     if (facebookLoginResult.status == FacebookLoginStatus.loggedIn) {
       var graphResponse = await http.get(
           'https://graph.facebook.com/v2.12/me?fields=first_name,last_name,email&access_token=${facebookLoginResult.accessToken.token}');
@@ -80,7 +77,7 @@ class _LoginState extends State<Login> {
                 if (user != null) {
                   SchedulerBinding.instance
                       .addPostFrameCallback((_) => setState(() {
-                            onFacebookLoggedIn(user['userId']);
+                            onFacebookLoggedIn(user['userId'], context);
                           }));
                 } else {
                   String registerUser = """
@@ -108,7 +105,8 @@ class _LoginState extends State<Login> {
                           return cache;
                         },
                         onCompleted: (result) {
-                          onFacebookLoggedIn('F' + _facebookProfile.id);
+                          onFacebookLoggedIn(
+                              'F' + _facebookProfile.id, context);
                         }),
                     builder: (
                       RunMutation runMutation,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:scuba/shared/AuthService.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class IDGetter extends StatelessWidget {
@@ -9,17 +10,15 @@ class IDGetter extends StatelessWidget {
   final Widget child;
   final ValueChanged<String> idEmitter;
 
-  Future<SharedPreferences> _getSharedPreferences() async {
-    return await SharedPreferences.getInstance();
-  }
-
   @override
   Widget build(BuildContext context) {
+    AuthService _auth = AuthService();
+
     return FutureBuilder(
-      future: _getSharedPreferences(),
+      future: _auth.getUserId(),
       builder: (context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData && snapshot.data.getString('id') != null) {
-          idEmitter(snapshot.data.getString('id'));
+        if (snapshot.hasData) {
+          idEmitter(snapshot.data);
           return child;
         }
         return Center(

@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:scuba/models/LogEntryFormData.dart';
 import 'package:scuba/models/LogFormStepController.dart';
+import 'package:scuba/shared/AuthService.dart';
 import 'package:scuba/shared/ScubaLayout.dart';
 import 'package:scuba/src/LogEntryForm/CommentsForm.dart';
 import 'package:scuba/src/LogEntryForm/ConditionsForm.dart';
@@ -23,6 +24,7 @@ class LogEntryForm extends StatefulWidget {
 class _LogEntryFormState extends State<LogEntryForm> {
   int _currentStep = 0;
   LogEntryData _logEntryData = LogEntryData();
+  AuthService _auth = AuthService();
 
   List<LogFormStepController> _stepControllers = [
     LogFormStepController(),
@@ -74,63 +76,49 @@ class _LogEntryFormState extends State<LogEntryForm> {
     }
   }
 
-  Future<SharedPreferences> _getSharedPreferences() async {
-    return await SharedPreferences.getInstance();
-  }
-
   @override
   Widget build(BuildContext context) {
     return ScubaLayout(
       selectedIndex: 0,
       slivers: <Widget>[
         SliverToBoxAdapter(
-          child: FutureBuilder(
-              future: _getSharedPreferences(),
-              builder: (context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData && snapshot.data.getString('id') != null) {
-                  return Stepper(
-                    physics: ClampingScrollPhysics(),
-                    currentStep: _currentStep,
-                    onStepContinue: _continue,
-                    onStepTapped: (int stepNumber) {
-                      _goToStep(stepNumber);
-                    },
-                    steps: _mySteps(),
-                    controlsBuilder: (BuildContext context,
-                        {VoidCallback onStepContinue,
-                        VoidCallback onStepCancel}) {
-                      return Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          _currentStep != 0
-                              ? Padding(
-                                  padding: const EdgeInsets.only(right: 12.0),
-                                  child: RaisedButton(
-                                    onPressed: _back,
-                                    child: const Text('Back'),
-                                  ),
-                                )
-                              : Container(),
-                          _currentStep == _mySteps().length - 1
-                              ? LogEntrySubmitButton(
-                                  logEntryData: _logEntryData,
-                                  userId: snapshot.data.getString('id'),
-                                  buttonPressed: (result) {
-                                    _continue();
-                                  },
-                                )
-                              : RaisedButton(
-                                  onPressed: _continue,
-                                  child: Text('Next'),
-                                )
-                        ],
-                      );
-                    },
-                  );
-                }
-                return CircularProgressIndicator();
-              }),
-        )
+            child: Stepper(
+          physics: ClampingScrollPhysics(),
+          currentStep: _currentStep,
+          onStepContinue: _continue,
+          onStepTapped: (int stepNumber) {
+            _goToStep(stepNumber);
+          },
+          steps: _mySteps(),
+          controlsBuilder: (BuildContext context,
+              {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
+            return Row(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                _currentStep != 0
+                    ? Padding(
+                        padding: const EdgeInsets.only(right: 12.0),
+                        child: RaisedButton(
+                          onPressed: _back,
+                          child: const Text('Back'),
+                        ),
+                      )
+                    : Container(),
+                _currentStep == _mySteps().length - 1
+                    ? LogEntrySubmitButton(
+                        logEntryData: _logEntryData,
+                        buttonPressed: (result) {
+                          _continue();
+                        },
+                      )
+                    : RaisedButton(
+                        onPressed: _continue,
+                        child: Text('Next'),
+                      )
+              ],
+            );
+          },
+        ))
       ],
     );
   }

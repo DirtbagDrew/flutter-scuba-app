@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:scuba/models/LogEntryFormData.dart';
+import 'package:scuba/shared/AuthService.dart';
 
 class LogEntrySubmitButton extends StatelessWidget {
   const LogEntrySubmitButton({
     Key key,
     @required this.logEntryData,
-    @required this.userId,
     @required this.buttonPressed,
   }) : super(key: key);
 
   final LogEntryData logEntryData;
-  final String userId;
   final ValueChanged buttonPressed;
 
   @override
@@ -52,7 +51,11 @@ class LogEntrySubmitButton extends StatelessWidget {
     );
   }
 
-  void _submitLogEntry(BuildContext context, RunMutation runMutation) {
+  Future<void> _submitLogEntry(
+      BuildContext context, RunMutation runMutation) async {
+    AuthService _auth = AuthService();
+    var userId = await _auth.getUserId();
+
     runMutation({
       "logEntry": {
         "airTemp": {
