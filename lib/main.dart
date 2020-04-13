@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:flutter_stetho/flutter_stetho.dart';
+import 'package:scuba/shared/AuthService.dart';
 import 'package:scuba/src/LoginRegister/Login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'src/LogEntryForm/LogEntryForm.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  Stetho.initialize();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -46,37 +53,24 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  bool _verified = false;
-  Future<SharedPreferences> _getSharedPreferences() async {
-    return await SharedPreferences.getInstance();
-  }
+  AuthService _auth = AuthService();
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: _getSharedPreferences(),
+        future: _auth.isLoggedIn(),
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
-            // //clear shared preferences
-            // SharedPreferences pref = snapshot.data;
-            // pref.clear();
-
-            if (snapshot.data.getString('id') != null || _verified) {
+            if (snapshot.data) {
               return LogEntryForm();
             } else {
-              return Login(
-                idResult: (String result) {
-                  setState(() {
-                    _verified = true;
-                  });
-                },
-              );
+              return Login();
             }
-          } else {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
           }
+          return Scaffold(
+              body: Center(
+            child: CircularProgressIndicator(),
+          ));
         });
   }
 }

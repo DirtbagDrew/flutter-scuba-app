@@ -9,10 +9,10 @@ import 'package:scuba/src/Profile/PersonalCertifications.dart';
 import 'package:scuba/src/Profile/PersonalDives.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Profile extends StatefulWidget {
-  const Profile({Key key, this.userName}) : super(key: key);
+import 'LogOutButton.dart';
 
-  final String userName;
+class Profile extends StatefulWidget {
+  const Profile({Key key}) : super(key: key);
 
   @override
   _ProfileState createState() => _ProfileState();
@@ -20,14 +20,6 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   String id;
-
-  Future<SharedPreferences> _getSharedPreferences() async {
-    return await SharedPreferences.getInstance();
-  }
-
-  _logout() {
-    var pref = _getSharedPreferences();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +80,10 @@ class _ProfileState extends State<Profile> {
                   );
                 }),
           ),
-        )
+        ),
+        SliverToBoxAdapter(
+          child: LogOutButton(),
+        ),
       ],
     );
   }
